@@ -1,1 +1,23 @@
 /* You can add global styles to this file, and also import other style files */
+@font-face {
+  font-family: "ampleregular";
+  src: url("/assets/fonts/soneri_type_-_ample-regular-webfont.woff2")
+      format("woff2"),
+    url("/assets/fonts/soneri_type_-_ample-regular-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  font-family: "ampleregular";
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  padding: 20px;
+}
