@@ -41,24 +41,22 @@ export class AppComponent {
   }
 
   private prepareDoc(havePrint = false): void {
-    const title = havePrint ? 'https://app.arqsign.com/' : 'ArqSign';
     const page = window.open(
-      title,
+      '',
       '_blanc',
       'height=700, width=700, resizable, scrollbars=yes'
     );
     page?.document.write(`
       <html>
         <head>
-            <title>${title}</title>
+            <title>ArqSign</title>
         </head>
         <body>
             ${this.pageElementHTML}
         </body>
-      </html>
-    `);
-    if (havePrint) page?.print();
+      </html>`);
     page?.document.close();
+    if (havePrint) page?.print();
   }
 
   toogleEdit(): void {
