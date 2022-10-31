@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { Editor, toHTML, Validators } from 'ngx-editor';
-import { MODEL_EDITOR, TOOLBAR_NGX } from './doc';
-
-export interface valueEditor {
-  value: string;
-  disabled: boolean;
-}
+import {
+  AbstractControl,
+  UntypedFormControl,
+  UntypedFormGroup,
+} from '@angular/forms';
+import { Editor, toDoc, toHTML, Validators } from 'ngx-editor';
+import {
+  DEFAULT_VALUE,
+  PRINT_HTML_ELEMENT,
+  TOOLBAR_NGX,
+} from './ngx-editor-config';
 
 @Component({
   selector: 'te-root',
@@ -15,8 +18,11 @@ export interface valueEditor {
 })
 export class AppComponent {
   toolbarNgx = TOOLBAR_NGX;
+
+  pageElementHTML = DEFAULT_VALUE;
+  pageDocJSON = toDoc(DEFAULT_VALUE);
+
   menuDesabled = true;
-  pageElementHTML = toHTML(MODEL_EDITOR);
 
   editor = new Editor();
   formEditText: UntypedFormGroup;
@@ -29,32 +35,22 @@ export class AppComponent {
     this.editor.destroy();
   }
 
+  private getControlEditor = (): AbstractControl =>
+    this.formEditText.controls['editor'];
+
   private buildForm(): void {
     this.formEditText = new UntypedFormGroup({
       editor: new UntypedFormControl(
-        { value: MODEL_EDITOR, disabled: false },
+        { value: this.pageDocJSON, disabled: false },
         Validators.required()
       ),
     });
-
-    this.formEditText.get('editor')?.disable();
+    this.getControlEditor()?.disable();
   }
 
   private prepareDoc(havePrint = false): void {
-    const page = window.open(
-      '',
-      '_blanc',
-      'height=700, width=700, resizable, scrollbars=yes'
-    );
-    page?.document.write(`
-      <html>
-        <head>
-            <title>ArqSign</title>
-        </head>
-        <body>
-            ${this.pageElementHTML}
-        </body>
-      </html>`);
+    const page = window.open('', '_blanc', 'height=700, width=700');
+    page?.document.write(PRINT_HTML_ELEMENT(this.pageElementHTML));
     page?.document.close();
     if (havePrint) page?.print();
   }
@@ -62,19 +58,20 @@ export class AppComponent {
   toogleEdit(): void {
     this.menuDesabled = !this.menuDesabled;
     if (this.menuDesabled) {
-      this.formEditText.get('editor')?.disable();
+      this.getControlEditor()?.disable();
       return;
     }
-    this.formEditText.get('editor')?.enable();
+    this.getControlEditor()?.enable();
   }
 
   cancel(): void {
     this.toogleEdit();
-    this.formEditText.get('editor')?.setValue(MODEL_EDITOR);
+    this.getControlEditor()?.setValue(this.pageDocJSON);
   }
 
   send(): void {
-    this.pageElementHTML = toHTML(this.formEditText.get('editor')?.value);
+    this.pageElementHTML = toHTML(this.getControlEditor()?.value);
+    console.log(this.pageElementHTML);
   }
 
   print = (): void => this.prepareDoc(true);

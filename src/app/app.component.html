@@ -1,5 +1,5 @@
 <div class="container">
-  <form [formGroup]="formEditText">
+  <form [formGroup]="formEditText" [class.disabled]="menuDesabled">
     <ngx-editor-menu
       [disabled]="menuDesabled"
       [editor]="editor"
@@ -10,7 +10,13 @@
       formControlName="editor"
       [editor]="editor"
       [placeholder]="'Digite aqui...'"
-    ></ngx-editor>
+      [class.disabled]="menuDesabled"
+    >
+      <ngx-editor-floating-menu
+        [autoPlace]="true"
+        [editor]="editor"
+      ></ngx-editor-floating-menu>
+    </ngx-editor>
   </form>
 
   <div class="buttons" *ngIf="menuDesabled">
